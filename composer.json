@@ -1,0 +1,25 @@
+{
+    "name": "alex-kassel/parser",
+    "description": "A small HTML parser collection",
+    "license": "",
+    "require": {
+        "php": "^8.2",
+        "alex-kassel/fetcher": "@dev"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.1"
+    },
+    "autoload": {
+        "files": [
+            "src/helpers.php"
+        ],
+        "psr-4": {
+            "AlexKassel\\Parser\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AlexKassel\\Parser\\Tests\\": "tests/"
+        }
+    }
+}
