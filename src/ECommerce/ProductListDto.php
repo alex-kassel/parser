@@ -10,7 +10,6 @@ final readonly class ProductListDto extends DataTransferObject
 {
     protected function processOutput(): array
     {
-        return $this->input;
         return [
             'url' => strval($this->input['url'] ?? '') ?: null,
             'title' => strval($this->input['title'] ?? ''),
