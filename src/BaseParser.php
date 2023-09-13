@@ -6,7 +6,7 @@ namespace AlexKassel\Parser;
 
 abstract class BaseParser
 {
-    protected array $output;
+    protected array $output = [];
 
     public function __construct(
         protected string $input,

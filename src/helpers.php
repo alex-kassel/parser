@@ -2,6 +2,31 @@
 
 declare(strict_types=1);
 
+if (! function_exists('convertHtmlToTextRows')) {
+    function convertHtmlToTextRows(string $html): array {
+        $search = ['<hr>', '<br>', '<br />', '</li>', '</tr>', '</p>', '</div>'];
+        
+        $html = preg_replace('/<(script|style).*?<\/\\1>/si', '', $html);
+        $html = str_replace($search, ' • ', html_entity_decode($html));
+        $html = preg_replace('/\s+/u', ' ', strip_tags($html));
+
+        $lines = [];
+        foreach (explode('•', $html) as $line) {
+            if ($line = trim($line)) {
+                $lines[] = $line;
+            }
+        }
+
+        return $lines;
+    }
+}
+
+if (! function_exists('str_squish')) {
+    function str_squish(string $string): string {
+        return preg_replace('/\s+/', ' ', trim($string));
+    }
+}
+
 if (! function_exists('str_contains_a')) {
     /**
      * Like str_contains(), but accepts placeholder asterisk *
