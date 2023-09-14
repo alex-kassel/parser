@@ -8,7 +8,7 @@ use AlexKassel\Parser\JsParser;
 
 class SocialProofParser extends JsParser
 {
-    public function processOutput(): void
+    protected function processOutput(): void
     {
         if(! str_contains($this->input, 'DS24_BUYER_LIST')) {
             $this->output = [
