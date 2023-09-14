@@ -4,32 +4,27 @@ declare(strict_types=1);
 
 namespace AlexKassel\Parser;
 
-use function Symfony\Component\Translation\t;
+use JetBrains\PhpStorm\NoReturn;
 
-/**
- * A factory to instantiate the proper parser.
- */
 class Parser
 {
-    public static function parse(string $url, string $html): BaseParser
+   public static function glob(): array
     {
-        return (new static())->getInstance($url, $html);
+        return glob(__DIR__ . '/DigitalMarketingPlatforms/*/*Parser.php');
     }
 
-    protected function getInstance(string $url, string $html): BaseParser
+    public static function use(string $url): string
     {
-        $class = $this->getClass($url);
-        return new $class($html);
-    }
+        $config = require('config.php');
 
-    protected function getClass(string $url): string
-    {
         switch ($url) {
-            case str_contains_a($url, '.checkout-ds24.com/product/'):
-            case str_contains_a($url, '.checkout-ds24.com/redir/'):
+            case str_contains($url, '.checkout-ds24.com/product/'):
+            case str_contains($url, '.checkout-ds24.com/redir/'):
                 return \AlexKassel\Parser\DigitalMarketingPlatforms\Digistore24\CheckoutParser::class;
             case str_contains_a($url, '.checkout-ds24.com*/marketplace'):
                 return \AlexKassel\Parser\DigitalMarketingPlatforms\Digistore24\MarketPlaceParser::class;
+            case str_contains($url, '.checkout-ds24.com/socialproof/'):
+                return \AlexKassel\Parser\DigitalMarketingPlatforms\Digistore24\SocialProofParser::class;
             default: throw new \InvalidArgumentException("No proper parser for '$url'");
         }
     }

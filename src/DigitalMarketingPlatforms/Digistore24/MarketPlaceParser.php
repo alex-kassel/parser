@@ -31,7 +31,7 @@ class MarketPlaceParser extends HtmlParser
                     'links' => $node->filter('.col-lg-3 .underline')->each(function($node) {
                         return [
                             $node->text(),
-                            $node->attr('hrefX'),
+                            $node->attr('href'),
                         ];
                     }, true),
                 ];

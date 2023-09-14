@@ -16,9 +16,12 @@ abstract class BaseParser
         $this->processOutput();
     }
 
-    public static function parse(...$arguments): static
+    public static function parse(...$arguments): array
     {
-        return new static(...$arguments);
+        return (new static(...$arguments))
+            ->getDto()
+            ->output
+        ;
     }
 
     abstract protected function prepareProcess(): void;

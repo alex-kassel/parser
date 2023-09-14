@@ -10,6 +10,11 @@ class CheckoutParser extends HtmlParser
 {
     use PlatformTrait;
 
+    private static array $pattern = [
+        '.checkout-ds24.com/product/',
+        '.checkout-ds24.com/redir/',
+    ];
+
     protected function processOutput(): void
     {
         $this->output = [
