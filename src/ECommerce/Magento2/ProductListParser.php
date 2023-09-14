@@ -14,26 +14,25 @@ class ProductListParser extends HtmlParser
         $this->output = [
             'url' => $this->data['url'] ?? null,
             'title' => $this->crawler->filter('title')->text(),
-            'products' => (function () {
-                return $this->crawler->filter('.product-item-info')->each(function ($node, $i) {
-                    return [
-                        'title' => $node->filter('.product-item-name')->text(),
-                        'description' => [],
-                        'image' => $node->filter('img')->attr('src'),
-                        'url' => $node->filter('a.product-item-link')->attr('href'),
-                        'price' => $node->filter('.price-box')->each(function ($node, $i) {
-                            return [
-                                'unit' => '',
-                                'old' => $node->filter('.productOldPrice')->text(),
-                                'now' => $node->filter('.normal-price')->text() ?: $node->innerText(),
-                            ];
-                        })[0],
-                        'tax' => $node->filter('.tax-details')->text(),
-                        'shipping' => '',
-                        'ribbons' => [],
-                    ];
-                });
-            })(),
+            'products' => $this->crawler->filter('.product-item-info')->each(function ($node, $i) {
+                return [
+                    'title' => $node->filter('.product-item-name')->text(),
+                    'description' => $node->filter('.product-item-description')->textRows(),
+                    'image' => $node->filter('img.product-image-photo')->attr('data-original'),
+                    'url' => $node->filter('a.product-item-link')->attr('href'),
+                    'price-tax' => $node->filter('.price-box')->textRows(),
+                    'price' => $node->filter('.price-box')->each(function ($node, $i) {
+                        return [
+                            'unit' => '',
+                            'old' => $node->filter('.productOldPrice')->text(),
+                            'now' => $node->filter('.normal-price')->text() ?: $node->innerText(),
+                        ];
+                    })[0],
+                    'tax' => $node->filter('.tax-details')->text(),
+                    'shipping' => '',
+                    'ribbons' => [],
+                ];
+            }),
             'pagination' => [
                 'page' => (int) $this->crawler->filter('.pagination .active')->text(),
                 'pages' => null,

@@ -12,33 +12,35 @@ final readonly class ProductListDto extends DataTransferObject
     {
         return [
             'url' => strval($this->input['url'] ?? '') ?: null,
-            'title' => strval($this->input['title'] ?? ''),
-            'products' => (function (): array {
+            'page_title' => strval($this->input['title'] ?? ''),
+            'items' => (function (): array {
                 $validated = [];
-                foreach ($this->input['products'] ?? [] as $product) {
+                foreach ($this->input['items'] ?? [] as $item) {
                     $validated[] = [
-                        'article' => strval($product['article'] ?? ''),
-                        'title' => strval($product['title'] ?? ''),
-                        'description' => (function () use ($product): array {
+                        'id' => strval($item['id'] ?? ''),
+                        'slug' => strval($item['slug'] ?? ''),
+                        'name' => strval($item['name'] ?? ''),
+                        'description' => (function () use ($item): array {
                             $validated = [];
-                            foreach ($product['description'] ?? [] as $row) {
-                                if ($row) $validated[] = (string) $row;
+                            foreach ($item['description'] ?? [] as $row) {
+                                if ($row = trim($row)) $validated[] =$row;
                             }
 
                             return $validated;
                         })(),
-                        'image' => strval($product['image'] ?? ''),
-                        'url' => strval($product['url'] ?? ''),
+                        'image_url' => strval($item['image_url'] ?? ''),
+                        'product_url' => strval($item['product_url'] ?? ''),
+                        'price_info' => (array) ($item['price_info'] ?? []),
                         'price' => [
-                            'unit' => strval($product['price']['unit'] ?? ''),
-                            'old' => strval($product['price']['old'] ?? ''),
-                            'now' => strval($product['price']['now'] ?? ''),
+                            'unit' => strval($item['price']['unit'] ?? ''),
+                            'old' => strval($item['price']['old'] ?? ''),
+                            'now' => strval($item['price']['now'] ?? ''),
                         ],
-                        'tax' => strval($product['tax'] ?? ''),
-                        'shipping' => strval($product['shipping'] ?? ''),
-                        'ribbons' => (function () use ($product): array {
+                        'tax' => strval($item['tax'] ?? ''),
+                        'shipping' => strval($item['shipping'] ?? ''),
+                        'ribbons' => (function () use ($item): array {
                             $validated = [];
-                            foreach ($product['ribbons'] ?? [] as $ribbon) {
+                            foreach ($item['ribbons'] ?? [] as $ribbon) {
                                 $validated[] = [
                                     'image' => strval($ribbon['image'] ?? ''),
                                     'alt' => strval($ribbon['alt'] ?? ''),
@@ -53,11 +55,9 @@ final readonly class ProductListDto extends DataTransferObject
 
                 return $validated;
             })(),
-            'pagination' => [
-                'page' => intval($this->input['pagination']['page'] ?? 0) ?: null,
-                'pages' => intval($this->input['pagination']['pages'] ?? 0) ?: null,
-                'nextPage' => boolval($this->input['pagination']['nextPage'] ?? false),
-            ],
+            'current_page' => intval($this->input['page'] ?? 0) ?: null,
+            'total_pages' => intval($this->input['pages'] ?? 0) ?: null,
+            'next_page' => boolval($this->input['nextPage'] ?? false),
         ];
     }
 }
