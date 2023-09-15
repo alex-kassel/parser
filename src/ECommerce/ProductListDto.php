@@ -10,9 +10,10 @@ final readonly class ProductListDto extends DataTransferObject
 {
     protected function processOutput(): array
     {
+        return $this->input;
         return [
-            'url' => strval($this->input['url'] ?? '') ?: null,
-            'page_title' => strval($this->input['title'] ?? ''),
+            'page_url' => strval($this->input['page_url'] ?? '') ?: null,
+            'page_title' => strval($this->input['page_title'] ?? ''),
             'items' => (function (): array {
                 $validated = [];
                 foreach ($this->input['items'] ?? [] as $item) {
@@ -23,14 +24,21 @@ final readonly class ProductListDto extends DataTransferObject
                         'description' => (function () use ($item): array {
                             $validated = [];
                             foreach ($item['description'] ?? [] as $row) {
-                                if ($row = trim($row)) $validated[] =$row;
+                                if ($row = trim($row)) $validated[] = $row;
                             }
 
                             return $validated;
                         })(),
                         'image_url' => strval($item['image_url'] ?? ''),
-                        'product_url' => strval($item['product_url'] ?? ''),
-                        'price_info' => (array) ($item['price_info'] ?? []),
+                        'item_url' => strval($item['item_url'] ?? ''),
+                        'price_info' => (function () use ($item): array {
+                            $validated = [];
+                            foreach ($item['price_info'] ?? [] as $row) {
+                                if ($row = trim($row)) $validated[] = $row;
+                            }
+
+                            return $validated;
+                        })(),
                         'price' => [
                             'unit' => strval($item['price']['unit'] ?? ''),
                             'old' => strval($item['price']['old'] ?? ''),

@@ -12,17 +12,18 @@ class ProductListParser extends HtmlParser
     protected function processOutput(): void
     {
         $this->output = [
-            'url' => $this->data['url'] ?? null,
-            'title' => $this->crawler->filter('title')->text(),
-            'products' => $this->crawler->filter('.product-container')->each(function ($node) {
+            'page_url' => $this->data['url'] ?? null,
+            'page_title' => $this->crawler->filter('title')->text(),
+            'items' => $this->crawler->filter('.product-container')->each(function ($node) {
                 return [
-                    'article' => null,
-                    'title' => $node->filter('.title')->text(),
+                    'id' => null,
+                    'slug' => null,
+                    'name' => $node->filter('.title')->text(),
                     'description' => $node->filter('.description')->textRows(),
-                    'image' => $node->filter('img')->attr('src'),
-                    'url' => $node->filter('a')->attr('href'),
-                    'price-tax' => $node->filter('.price-tax')->textRows(function ($rows) {
-                        array_pop($rows);
+                    'image_url' => $node->filter('img')->attr('src'),
+                    'item_url' => $node->filter('a')->attr('href'),
+                    'price_info' => $node/*->filter('.price-tax')*/->textRows(function ($rows) {
+                        #array_pop($rows); // button
                         return $rows;
                     }),
                     'price' => $node->filter('.current-price-container')->each(function ($node, $i) {
