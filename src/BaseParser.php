@@ -12,16 +12,15 @@ abstract class BaseParser
         protected string $input,
         protected array $data = []
     ) {
-        $this->prepareProcess();
-        $this->processOutput();
+        if ($this->input) {
+            $this->prepareProcess();
+            $this->processOutput();
+        }
     }
 
     public static function parse(...$arguments): array
     {
-        return (new static(...$arguments))
-            ->getDto()
-            ->output
-        ;
+        return (new static(...$arguments))->getDto()->output;
     }
 
     abstract protected function prepareProcess(): void;

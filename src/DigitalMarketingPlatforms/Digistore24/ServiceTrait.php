@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AlexKassel\Parser\DigitalMarketingPlatforms\Digistore24;
 
-trait PlatformTrait
+trait ServiceTrait
 {
     protected $base_url = 'https://www.checkout-ds24.com';
 

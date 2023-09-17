@@ -8,7 +8,12 @@ use AlexKassel\Parser\HtmlParser;
 
 class MarketPlaceParser extends HtmlParser
 {
-    use PlatformTrait;
+    use ServiceTrait;
+
+    public static function urlPattern(): array|string
+    {
+        return '.checkout-ds24.com*/marketplace/';
+    }
 
     protected function processOutput(): void
     {

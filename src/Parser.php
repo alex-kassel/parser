@@ -4,28 +4,35 @@ declare(strict_types=1);
 
 namespace AlexKassel\Parser;
 
-use JetBrains\PhpStorm\NoReturn;
-
 class Parser
 {
-   public static function glob(): array
-    {
-        return glob(__DIR__ . '/DigitalMarketingPlatforms/*/*Parser.php');
-    }
+   public static function parse(string $input, array $data = []): array
+   {
+       if ($url = $data['url'] ?? '') {
+           return (static::getClass($url))::parse($input, $data);
+       }
 
-    public static function use(string $url): string
-    {
-        $config = require('config.php');
+       throw new \InvalidArgumentException("Parameter 'url' in second argument (array) expected");
+   }
 
-        switch ($url) {
-            case str_contains($url, '.checkout-ds24.com/product/'):
-            case str_contains($url, '.checkout-ds24.com/redir/'):
-                return \AlexKassel\Parser\DigitalMarketingPlatforms\Digistore24\CheckoutParser::class;
-            case str_contains_a($url, '.checkout-ds24.com*/marketplace'):
-                return \AlexKassel\Parser\DigitalMarketingPlatforms\Digistore24\MarketPlaceParser::class;
-            case str_contains($url, '.checkout-ds24.com/socialproof/'):
-                return \AlexKassel\Parser\DigitalMarketingPlatforms\Digistore24\SocialProofParser::class;
-            default: throw new \InvalidArgumentException("No proper parser for '$url'");
+   protected static function getClass(string $url): string
+    {
+        $globBrace = '{DigitalMarketingPlatforms}';
+        $pattern = sprintf('%s/%s/*/*Parser.php', __DIR__, $globBrace);
+        $files = glob($pattern, GLOB_BRACE);
+
+        foreach($files as $file) {
+            $parser = __NAMESPACE__ . str_replace('/', '\\',
+                substr($file, strpos($file, '/src/') + 4, -4)
+            );
+
+            foreach((array) $parser::urlPattern() as $pattern) {
+                if (str_contains_a($url, $pattern)) {
+                    return $parser;
+                }
+            }
         }
+
+        throw new \InvalidArgumentException("No parser found for '$url'");
     }
 }

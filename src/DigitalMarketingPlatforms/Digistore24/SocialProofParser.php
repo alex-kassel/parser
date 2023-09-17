@@ -8,6 +8,11 @@ use AlexKassel\Parser\JsParser;
 
 class SocialProofParser extends JsParser
 {
+    public static function urlPattern(): array|string
+    {
+        return '.checkout-ds24.com/socialproof/';
+    }
+
     protected function processOutput(): void
     {
         if(! str_contains($this->input, 'DS24_BUYER_LIST')) {

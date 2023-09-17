@@ -8,12 +8,15 @@ use AlexKassel\Parser\HtmlParser;
 
 class CheckoutParser extends HtmlParser
 {
-    use PlatformTrait;
+    use ServiceTrait;
 
-    private static array $pattern = [
-        '.checkout-ds24.com/product/',
-        '.checkout-ds24.com/redir/',
-    ];
+    public static function urlPattern(): array|string
+    {
+        return [
+            '.checkout-ds24.com/product/',
+            '.checkout-ds24.com/redir/',
+        ];
+    }
 
     protected function processOutput(): void
     {
