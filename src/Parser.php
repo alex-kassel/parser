@@ -17,9 +17,10 @@ class Parser
 
    protected static function getClass(string $url): string
     {
-        $globBrace = '{DigitalMarketingPlatforms}';
-        $pattern = sprintf('%s/%s/*/*Parser.php', __DIR__, $globBrace);
-        $files = glob($pattern, GLOB_BRACE);
+        #$globBrace = '{DigitalMarketingPlatforms,MarketPlaces}';
+        #$pattern = sprintf('%s/%s/*/*Parser.php', __DIR__, $globBrace);
+        #$files = glob($pattern, GLOB_BRACE);
+        $files = glob(sprintf('%s/*/*/*Parser.php', __DIR__));
 
         foreach($files as $file) {
             $parser = __NAMESPACE__ . str_replace('/', '\\',

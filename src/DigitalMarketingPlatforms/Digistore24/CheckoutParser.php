@@ -10,7 +10,7 @@ class CheckoutParser extends HtmlParser
 {
     use ServiceTrait;
 
-    public static function urlPattern(): array|string
+    public static function urlPattern(): array
     {
         return [
             '.checkout-ds24.com/product/',

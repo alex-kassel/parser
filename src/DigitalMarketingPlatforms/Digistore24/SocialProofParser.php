@@ -8,9 +8,11 @@ use AlexKassel\Parser\JsParser;
 
 class SocialProofParser extends JsParser
 {
-    public static function urlPattern(): array|string
+    public static function urlPattern(): array
     {
-        return '.checkout-ds24.com/socialproof/';
+        return [
+            '.checkout-ds24.com/socialproof/'
+        ];
     }
 
     protected function processOutput(): void

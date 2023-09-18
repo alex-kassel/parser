@@ -18,6 +18,11 @@ abstract class BaseParser
         }
     }
 
+    public static function urlPattern(): array
+    {
+        return [];
+    }
+
     public static function parse(...$arguments): array
     {
         return (new static(...$arguments))->getDto()->output;
