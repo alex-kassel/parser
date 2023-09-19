@@ -2,6 +2,32 @@
 
 declare(strict_types=1);
 
+if (! function_exists('json_decode_recursive')) {
+    function json_decode_recursive(mixed $mixed, ?bool $associative = null, int $depth = 512, int $flags = 0): mixed {
+        if (is_object($mixed)) {
+            $mixed = (array) $mixed;
+        }
+
+        if (is_array($mixed)) {
+            $data = [];
+            foreach ($mixed as $key => $value) {
+                $data[$key] = json_decode_recursive($value, $associative, $depth, $flags);
+            }
+
+            return $associative ? $data : (object) $data;
+        }
+
+        if (is_string($mixed)) {
+            return  is_null($json_decoded = json_decode($mixed, $associative, $depth, $flags))
+                ? $mixed
+                : json_decode_recursive($json_decoded, $associative, $depth, $flags)
+                ;
+        }
+
+        return $mixed;
+    }
+}
+
 if (! function_exists('convertHtmlToTextRows')) {
     function convertHtmlToTextRows(string $html): array {
         $search = ['<hr>', '<br>', '<br />', '</li>', '</tr>', '</p>', '</div>'];
@@ -22,8 +48,32 @@ if (! function_exists('convertHtmlToTextRows')) {
 }
 
 if (! function_exists('str_squish')) {
-    function str_squish(string $string): string {
-        return preg_replace('/\s+/', ' ', trim($string));
+    /**
+     * Squish a string by replacing multiple spaces with a single replacement and trim it.
+     *
+     * @param string $string The input string to squish.
+     * @param bool $replaceNonBreakingSpaces (Optional) Whether to replace non-breaking spaces with spaces. Default is true.
+     * @param string $characters (Optional) A list of additional characters to trim. Default is null.
+     * @param string $replacement (Optional) The character to replace multiple spaces with. Default is a single space " ".
+     *
+     * @return string The squished string.
+     */
+    function str_squish(
+        string $string,
+        bool $replaceNonBreakingSpaces = true,
+        string $characters = null,
+        string $replacement = ' '
+    ): string {
+        if ($replaceNonBreakingSpaces) {
+            // Replace &nbsp; and its UTF-8 incarnations with spaces if they exist
+            $string = preg_replace('/(&nbsp;|\xC2\xA0|\xE1\x9A\x80|\xE2\x80\xAF|\xE3\x80\x80)/u', ' ', $string);
+        }
+
+        // Trim the string, optionally using the provided character list
+        $string = trim($string, strval($characters) . " \n\r\t\v\x00");
+
+        // Replace multiple spaces with the specified replacement string and return
+        return preg_replace('/(?:' . preg_quote($replacement, '/') . '|\s)+/', $replacement, $string);
     }
 }
 

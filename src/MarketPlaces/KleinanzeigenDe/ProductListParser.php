@@ -25,7 +25,7 @@ class ProductListParser extends HtmlParser
                 return [
                     'id' => $node->attr('data-adid'),
                     'sponsored' => ! is_null($node->closest('li.is-topad')),
-                    'name' => $node->filter('h2')->text(),
+                    'name' => $name = $node->filter('h2')->text(),
                     'description' => $node->filter('.aditem-main--middle--description')->text(),
                     'details' => $node->filter('.aditem-main--bottom > p > span')->texts(),
                     'bullets' => [],
@@ -43,11 +43,32 @@ class ProductListParser extends HtmlParser
                             'url' => $this->base_url . $node->attr('href'),
                         ];
                     })[0] ?? [],
-                    'place' => $node->filter('.aditem-main--top--left')->text(),
+                    'place' => explode(' ', $node->filter('.aditem-main--top--left')->text())[0]
+                        . rtrim(str_replace([$name, 'Vorschau'], '', $node->filter('img')->attr('alt')))
+                        ,
                     'date' => $node->filter('.aditem-main--top--right')->text(),
-                    #'image_counter' => $node->filter('.galleryimage--counter')->text(),
+                    'more_info' => [
+                        'image_counter' => (int) $node->filter('.galleryimage--counter')->text(),
+                    ],
                 ];
             }),
+            'pagination' => [
+                'current_page' => $this->crawler->filter('.pagination-current')->text(),
+                'previous_page' => ($path = $this->crawler->filter('.pagination-prev')->attr('href'))
+                    ? $this->base_url . $path
+                    : ''
+                    ,
+                'next_page' => ($path = $this->crawler->filter('.pagination-next')->attr('href'))
+                    ? $this->base_url . $path
+                    : ''
+                    ,
+            ],
+            'more_info' => [
+                'dimensions' => preg_match('/dimensions: ({.*?}),\s*extraDimensions:/s', $this->crawler->text(), $matches)
+                    ? json_decode_recursive($matches[1])
+                    : []
+                    ,
+            ],
         ];
     }
 

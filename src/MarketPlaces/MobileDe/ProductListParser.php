@@ -35,11 +35,18 @@ class ProductListParser extends HtmlParser
                         'vat' => $node->filter('.price-block [class="u-block"]')->text(),
                         'label' => $node->filter('.mde-price-rating__badge__label')->text(),
                     ],
-                    'sellser' => $node->filter('.g-col-12')->eq(1)->textRows(),
+                    'seller' => $node->filter('.u-valign-middle')->closest('.g-row')->textRows(),
                     'place' => '',
                     'date' => '',
+                    'more_info' => [],
                 ];
             }),
+            'pagination' => [
+                'current_page' => $this->crawler->filter('.pagination .disabled')->text(),
+                'previous_page' => $this->crawler->filter('#page-back')->attr('data-href') ?: '',
+                'next_page' => $this->crawler->filter('#page-forward')->attr('data-href') ?: '',
+            ],
+            'more_info' => [],
         ];
     }
 
