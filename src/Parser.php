@@ -28,7 +28,7 @@ class Parser
             );
 
             foreach((array) $parser::urlPattern() as $pattern) {
-                if (str_contains_a($url, $pattern)) {
+                if (str_contains_all($url, $pattern)) {
                     return $parser;
                 }
             }
